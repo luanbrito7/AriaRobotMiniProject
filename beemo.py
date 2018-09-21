@@ -53,6 +53,7 @@ if not conn.connectRobot():
     Aria_exit(1)
 
 sonar = ArSonarDevice()
+robot.addRangeDevice(sonar)
 robot.runAsync(1)
 
 recover = ArActionStallRecover()
