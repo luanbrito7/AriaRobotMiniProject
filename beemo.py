@@ -41,6 +41,13 @@ int main(int argc, char** argv)
 
 from AriaPy import *
 import sys
+import numpy
+
+# initial position = [1000, 1500] (1m e 1.5m)
+blocoSize = 500 #OBS => criar funcao para receber posicao do robo (return getPose.x + 1000, get.Pose.y + 1500) 
+xSize =int((19000 + 1000) / blocoSize) # Mapa real tem aprox 19m no eixo X + 1m para posicao incial do robo 
+ySize = int((14000 + 1500) / blocoSize) # Mapa real tem aprox 14m no eixo Y + 1.5m para posicao inicial do robo
+mapa = numpy.zeros(shape=(xSize, ySize))
 
 Aria_init()
 parser = ArArgumentParser(sys.argv)
