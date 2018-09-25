@@ -43,10 +43,9 @@ from AriaPy import *
 import sys
 import numpy
 
-# initial position = [1000, 1500] (1m e 1.5m)
-blocoSize = 500 #OBS => criar funcao para receber posicao do robo (return getPose.x + 1000, get.Pose.y + 1500) 
-xSize =int((19000 + 1000) / blocoSize) # Mapa real tem aprox 19m no eixo X + 1m para posicao incial do robo 
-ySize = int((14000 + 1500) / blocoSize) # Mapa real tem aprox 14m no eixo Y + 1.5m para posicao inicial do robo
+blocoSize = 500 # Aprox tamanho do robô 
+xSize =int(18400 / blocoSize) # Mapa real tem aprox 18.4m no eixo X
+ySize = int(13800 / blocoSize) # Mapa real tem aprox 13.8m no eixo Y
 mapa = numpy.zeros(shape=(xSize, ySize))
 
 Aria_init()
@@ -62,6 +61,9 @@ if not conn.connectRobot():
 sonar = ArSonarDevice()
 robot.addRangeDevice(sonar)
 robot.runAsync(1)
+
+# initial position = [1000, 1500] (1m e 1.5m)
+robot.moveTo(ArPose(1000, 1500))
 
 recover = ArActionStallRecover()
 robot.addAction(recover, 100)
