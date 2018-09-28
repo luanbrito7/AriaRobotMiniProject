@@ -1,5 +1,5 @@
 """
-retorna dicionario com coordenadas da posicao minima do mapa de caminho filepath ou None se nao achar 
+retorna dicionarios com coordenadas das consultas no mapa de caminho filepath
 /usr/local/Aria/maps/office.map no osboxes
 """
 def get_map_min_pos(filepath):
@@ -44,7 +44,3 @@ def get_map_max_pos(filepath):
         return max_pos
     except Exception as e:
         print e
-
-print get_map_min_pos('/usr/local/Aria/maps/office.map')
-print get_robot_home('/usr/local/Aria/maps/office.map')
-print get_map_max_pos('/usr/local/Aria/maps/office.map')

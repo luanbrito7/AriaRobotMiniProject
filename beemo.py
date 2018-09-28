@@ -42,10 +42,17 @@ int main(int argc, char** argv)
 from AriaPy import *
 import sys
 import numpy
+from util import get_robot_home, get_map_min_pos, get_map_max_pos
+
+# variaveis do mapa
+map_path = '/usr/local/Aria/maps/office.map'
+robot_home = get_robot_home(map_path)
+mapMinPos = get_map_min_pos(map_path)
+mapMaxPos = get_map_max_pos(map_path)
 
 blocoSize = 500 # Aprox tamanho do robo
-xSize =int(18400 / blocoSize) # Mapa real tem aprox 18.4m no eixo X
-ySize = int(13800 / blocoSize) # Mapa real tem aprox 13.8m no eixo Y
+xSize =int(mapMaxPos['x']-mapMinPos['x'] / blocoSize) # Mapa real tem aprox 18.4m no eixo X
+ySize = int(mapMaxPos['y']-mapMinPos['y'] / blocoSize) # Mapa real tem aprox 13.8m no eixo Y
 mapa = numpy.zeros(shape=(xSize, ySize))
 
 Aria_init()
@@ -63,7 +70,7 @@ robot.addRangeDevice(sonar)
 robot.runAsync(1)
 
 # initial position = [1000, 1500] (1m e 1.5m)
-robot.moveTo(ArPose(1000, 1500))
+robot.moveTo(ArPose(robot_home['x'], robot_home['y']))
 
 # funcoes de conversao
 def getRealCoords(x, y):
