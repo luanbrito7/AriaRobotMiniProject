@@ -12,9 +12,9 @@ def get_map_min_pos(filepath):
             return None
     read = read.split()
     try: 
-        min_pos = {x: float(read[1]), y: float(read[2])}
+        min_pos = {'x': float(read[1]), 'y': float(read[2])}
         return min_pos
-    except e:
+    except Exception as e:
         print e
 
 def get_robot_home(filepath):
@@ -26,7 +26,25 @@ def get_robot_home(filepath):
             return None
     read = read.split()
     try:
-        robot_home = {x: float(read[2]), y: float(read[3]), t: float(read[4])}
+        robot_home = {'x': float(read[2]), 'y': float(read[3]), 't': float(read[4])}
         return robot_home
-    except e:
+    except Exception as e:
         print e
+
+def get_map_max_pos(filepath):
+    file = open(filepath)
+    read = file.readline()
+    while 'LineMaxPos' not in read:
+        read = file.readline()
+        if not read: # evita um loop inf se mapa nao tiver informacao de posicao min
+            return None
+    read = read.split()
+    try: 
+        max_pos = {'x': float(read[1]), 'y': float(read[2])}
+        return max_pos
+    except Exception as e:
+        print e
+
+print get_map_min_pos('/usr/local/Aria/maps/office.map')
+print get_robot_home('/usr/local/Aria/maps/office.map')
+print get_map_max_pos('/usr/local/Aria/maps/office.map')
