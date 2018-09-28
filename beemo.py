@@ -43,7 +43,7 @@ from AriaPy import *
 import sys
 import numpy
 
-blocoSize = 500 # Aprox tamanho do robô 
+blocoSize = 500 # Aprox tamanho do robo
 xSize =int(18400 / blocoSize) # Mapa real tem aprox 18.4m no eixo X
 ySize = int(13800 / blocoSize) # Mapa real tem aprox 13.8m no eixo Y
 mapa = numpy.zeros(shape=(xSize, ySize))
@@ -64,6 +64,13 @@ robot.runAsync(1)
 
 # initial position = [1000, 1500] (1m e 1.5m)
 robot.moveTo(ArPose(1000, 1500))
+
+# funcoes de conversao
+def getRealCoords(x, y):
+    return (x * blocoSize, y * blocoSize)
+
+def getArrayCoords(x, y):
+    return (int(round(x / blocoSize)), int(round(y / blocoSize)))
 
 recover = ArActionStallRecover()
 robot.addAction(recover, 100)
