@@ -55,8 +55,8 @@ robot.enableMotors()
 def length(x, y):
   return math.sqrt(x*x+y*y)
 
-pos_x = robot.getX() + 40000
-pos_y = robot.getY()
+pos_x = robot.getX()+40000
+pos_y = robot.getY()+5000
 gotoPoseAction.setGoal(ArPose(pos_x, pos_y))
 while Aria.getRunning:
     
@@ -64,7 +64,11 @@ while Aria.getRunning:
       sr = robot.getSonarReading(i)
       if sr.getRange() < sonarMaxRange: # parede
         # insere na matriz de obstaculos
-        print "Parede sensor ", str(i)
+        globalCoords = {'x': sr.getX(), 'y': sr.getY()}
+        mapCoords = getArrayCoords(globalCoords['x'], globalCoords['y'])
+        
+        log = "globalCoords = ({}, {})    mapCoords = ({}, {})".format(globalCoords['x'], globalCoords['y'], mapCoords[0], mapCoords[1])
+        print log
 
 
 
