@@ -12,8 +12,8 @@ mapMinPos = get_map_min_pos(map_path)
 mapMaxPos = get_map_max_pos(map_path)
 
 blocoSize = 500 # Aprox tamanho do robo
-xSize =int(mapMaxPos['x']-mapMinPos['x'] / blocoSize) # Mapa real tem aprox 18.4m no eixo X
-ySize = int(mapMaxPos['y']-mapMinPos['y'] / blocoSize) # Mapa real tem aprox 13.8m no eixo Y
+xSize =int((mapMaxPos['x']-mapMinPos['x']) / blocoSize) # Mapa real tem aprox 18.4m no eixo X
+ySize = int((mapMaxPos['y']-mapMinPos['y']) / blocoSize) # Mapa real tem aprox 13.8m no eixo Y
 mapa = numpy.zeros(shape=(xSize, ySize))
 
 Aria_init()
