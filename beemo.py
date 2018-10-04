@@ -1,6 +1,8 @@
 from AriaPy import *
 import sys
 import numpy
+import math
+
 from util import get_robot_home, get_map_min_pos, get_map_max_pos
 
 # variaveis do mapa
@@ -27,6 +29,7 @@ if not conn.connectRobot():
 sonar = ArSonarDevice()
 robot.addRangeDevice(sonar)
 robot.runAsync(1)
+sonarMaxRange = sonar.getMaxRange()
 
 # initial position = [1000, 1500] (1m e 1.5m)
 robot.moveTo(ArPose(robot_home['x'], robot_home['y']))
@@ -49,17 +52,25 @@ robot.addAction(stopAction, 40)
 
 robot.enableMotors()
 
-pos_x = 1
-pos_y = 1
+def length(x, y):
+  return math.sqrt(x*x+y*y)
+
+pos_x = robot.getX() + 40000
+pos_y = robot.getY()
+gotoPoseAction.setGoal(ArPose(pos_x, pos_y))
 while Aria.getRunning:
     
+    for i in range(0, robot.getNumSonar()):
+      sr = robot.getSonarReading(i)
+      if sr.getRange() < sonarMaxRange: # parede
+        # insere na matriz de obstaculos
+        print "Parede sensor ", str(i)
 
 
 
 
     print robot.getPose()
-    gotoPoseAction.setGoal(ArPose(pos_x, pos_y))
-    pos_x *= 2
-    pos_y *= 2
-    ArUtil.sleep(20000)
+    # pos_x *= 2
+    # pos_y *= 2
+    ArUtil.sleep(5000)
     # robot.unlock()
