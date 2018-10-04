@@ -58,6 +58,25 @@ def length(x, y):
 pos_x = robot.getX()+40000
 pos_y = robot.getY()+5000
 gotoPoseAction.setGoal(ArPose(pos_x, pos_y))
+
+def getNeighbors(x, y):
+    neighbors = []
+    if(x < xSize):
+        neighbors.append((x+1, y))
+        if(y < ySize):
+            neighbors.append((x+1, y+1))
+            neighbors.append((x, y+1))
+    if(x > 0):
+        neighbors.append((x-1, y))
+        if(y > 0):
+            neighbors.append((x-1, y-1))
+            neighbors.append((x, y-1))
+    if(x > 0 and y < ySize):
+        neighbors.append((x-1, y+1))
+    if(x < xSize and y > 0):
+        neighbors.append((x+1, y-1))
+    return neighbors
+
 while Aria.getRunning:
     
     for i in range(0, robot.getNumSonar()):
