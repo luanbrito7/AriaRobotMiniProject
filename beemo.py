@@ -69,7 +69,8 @@ while Aria.getRunning:
         
         log = "globalCoords = ({}, {})    mapCoords = ({}, {})".format(globalCoords['x'], globalCoords['y'], mapCoords[0], mapCoords[1])
         print log
-
+        # mapa.itemset(mapCoords, 1)
+        # print mapa
 
 
 
