@@ -59,7 +59,7 @@ pos_x = robot.getX()+40000
 pos_y = robot.getY()+5000
 gotoPoseAction.setGoal(ArPose(pos_x, pos_y))
 
-def getNeighbors(x, y):
+def getNeighbors(x, y): #pega os 6 vizinhos do elemento onde estou
     neighbors = []
     if(x < xSize):
         neighbors.append((x+1, y))
@@ -76,6 +76,19 @@ def getNeighbors(x, y):
     if(x < xSize and y > 0):
         neighbors.append((x+1, y-1))
     return neighbors
+
+def heuristic(x, y): #distancia minima ate o destino
+    position = getRealCoords(x, y)
+    dx = pos_x - position[0]
+    dy = pos_y - position[1]
+    return length(dx, dy)
+
+
+def greedy(x, y):
+    position = getArrayCoords(x, y)
+    neighbors = getNeighbors(position[0], position[1])
+    
+
 
 while Aria.getRunning:
     
