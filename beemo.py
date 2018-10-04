@@ -65,12 +65,14 @@ def getNeighbors(x, y): #pega os 6 vizinhos do elemento onde estou
         neighbors.append((x+1, y))
         if(y < ySize):
             neighbors.append((x+1, y+1))
-            neighbors.append((x, y+1))
+    if(y < ySize):
+        neighbors.append((x, y+1))
     if(x > 0):
         neighbors.append((x-1, y))
         if(y > 0):
             neighbors.append((x-1, y-1))
-            neighbors.append((x, y-1))
+    if(y > 0):
+        neighbors.append((x, y-1))
     if(x > 0 and y < ySize):
         neighbors.append((x-1, y+1))
     if(x < xSize and y > 0):
@@ -87,7 +89,7 @@ def heuristic(x, y): #distancia minima ate o destino
 def greedy(x, y):
     position = getArrayCoords(x, y)
     neighbors = getNeighbors(position[0], position[1])
-    
+
 
 
 while Aria.getRunning:
