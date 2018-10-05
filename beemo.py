@@ -12,9 +12,11 @@ robot_home = get_robot_home(map_path)
 mapMinPos = get_map_min_pos(map_path)
 mapMaxPos = get_map_max_pos(map_path)
 
-blocoSize = 500 # Aprox tamanho do robo
-xSize =int((mapMaxPos['x']-mapMinPos['x']) / blocoSize) # Mapa real tem aprox 18.4m no eixo X
-ySize = int((mapMaxPos['y']-mapMinPos['y']) / blocoSize) # Mapa real tem aprox 13.8m no eixo Y
+blocoSize = 510 # Aprox tamanho do robo
+tempoSleep = 100
+xSize = int(45 * 1000 / blocoSize) # Mapa real tem aprox 18.4m no eixo X
+ySize = int(45 * 1000 / blocoSize) # Mapa real tem aprox 13.8m no eixo Y
+offset = xSize / 2
 mapa = numpy.zeros(shape=(xSize, ySize))
 
 Aria_init()
@@ -32,15 +34,16 @@ robot.addRangeDevice(sonar)
 robot.runAsync(1)
 sonarMaxRange = sonar.getMaxRange()
 
+
 # initial position = [1000, 1500] (1m e 1.5m)
 robot.moveTo(ArPose(robot_home['x'], robot_home['y']))
 
 # funcoes de conversao
 def getRealCoords(x, y):
-    return (x * blocoSize, y * blocoSize)
+    return (x * blocoSize + offset, y * blocoSize + offset)
 
 def getArrayCoords(x, y):
-    return (int(round(x / blocoSize)), int(round(y / blocoSize)))
+    return (int(round((x - offset) / blocoSize)), int(round((y - offset) / blocoSize)))
 
 recover = ArActionStallRecover()
 robot.addAction(recover, 100)
@@ -56,28 +59,19 @@ robot.enableMotors()
 def length(x, y):
   return math.sqrt(x*x+y*y)
 
-pos_x = robot.getX()+40000
-pos_y = robot.getY()+5000
-gotoPoseAction.setGoal(ArPose(pos_x, pos_y))
+pos_x, pos_y = getArrayCoords(9000, 9000)
+#gotoPoseAction.setGoal(ArPose(pos_x, pos_y))
 
 def getNeighbors(x, y): #pega os 6 vizinhos do elemento onde estou
     neighbors = []
-    if(x < xSize):
+    if(x + 1 < xSize):
         neighbors.append((x+1, y))
-        if(y < ySize):
-            neighbors.append((x+1, y+1))
-    if(y < ySize):
+    if(y + 1 < ySize):
         neighbors.append((x, y+1))
     if(x > 0):
         neighbors.append((x-1, y))
-        if(y > 0):
-            neighbors.append((x-1, y-1))
     if(y > 0):
         neighbors.append((x, y-1))
-    if(x > 0 and y < ySize):
-        neighbors.append((x-1, y+1))
-    if(x < xSize and y > 0):
-        neighbors.append((x+1, y-1))
     return neighbors
 
 def heuristic((x, y)): #distancia minima ate o destino
@@ -86,8 +80,27 @@ def heuristic((x, y)): #distancia minima ate o destino
     dy = pos_y - position[1]
     return length(dx, dy)
 
+def chegueiEm(x, y):
+    realX, realY = getArrayCoords(robot.getX(), robot.getY())
+    return (realX == x and realY == y)
+
+def moveTo(ar, x, y):
+    robot.lock()
+    gotoPoseAction.setGoal(ar)
+    robot.unlock()
+    ArUtil.sleep(50)
+    while(not chegueiEm(x, y)):
+        h1, h2 = robot.getX(), robot.getY()
+        log = "Andando e tou na ({}, {})".format(h1, h2)
+        print(log)
+        ArUtil.sleep(tempoSleep)
+
 def DFS(x, y):
+    robot.lock()
+    print (mapa)
     mapa[x][y] = 1
+    if(x == pos_x and y == pos_y):
+        return 1
     for i in range(0, robot.getNumSonar()):
       sr = robot.getSonarReading(i)
       if sr.getRange() < sonarMaxRange: # parede
@@ -99,22 +112,41 @@ def DFS(x, y):
         print log
         mapa.itemset(mapCoords, 1)
         # print mapa
+    robot.unlock()
     neighbors = getNeighbors(x, y)
+    h1, h2 = robot.getX(), robot.getY()
+    h3, h4 = getRealCoords(x, y)
+    log = "Debugando isso aqui, tou na posicao ({}, {}) e acho que tou na ({}, {})".format(h1, h2, h3, h4)
+    print(log)
     for i,j in neighbors:
         if(mapa[i][j] == 0):
-            gotoPoseAction(ArPose(getRealCoords(i, j)))
+            realI, realJ = getRealCoords(i, j)
+            log = "Tentando ir para ({}, {})".format(realI, realJ)
+            print(log)
+            moveTo(ArPose(realI, realJ), i, j)
+            h1, h2 = robot.getX(), robot.getY()
+            log = "Debugando isso aqui, cheguei na posicao ({}, {})".format(h1, h2)
+            print(log)
             if(DFS(i, j)):
                 return 1
-            gotoPoseAction(ArPose(getRealCoords(x, y)))
+            realX, realY = getRealCoords(x, y)
+            moveTo(ArPose(realX, realY), x, y)
+            h1, h2 = robot.getX(), robot.getY()
+            log = "Debugando isso aqui, voltei pra posicao ({}, {})".format(h1, h2)
+            print(log)
     return 0 
 
 
+posX = robot.getX()
+posY = robot.getY()
+x, y = getArrayCoords(posX, posY)
+if(DFS(x, y)):
+    print("Deu bom")
+else:
+    print("Deu ruim")
+
 while Aria.getRunning:
-    
-    
 
-
-    print robot.getPose()
     # pos_x *= 2
     # pos_y *= 2
     ArUtil.sleep(5000)
