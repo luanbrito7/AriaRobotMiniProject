@@ -64,13 +64,26 @@ pos_x, pos_y = getArrayCoords(9000, 9000)
 
 def getNeighbors(x, y): #pega os 6 vizinhos do elemento onde estou
     neighbors = []
-    if(x + 1 < xSize):
+    up, down, left, right = 0, 0, 0, 0
+    if(x + 1 < xSize and x < pos_x):
         neighbors.append((x+1, y))
-    if(y + 1 < ySize):
+        right = 1
+    if(y + 1 < xSize and y < pos_y):
         neighbors.append((x, y+1))
-    if(x > 0):
+        up = 1
+    if(x > 0 and x > pos_x):
         neighbors.append((x-1, y))
-    if(y > 0):
+        left = 1
+    if(y > 0 and y > pos_y):
+        neighbors.append((x, y-1))
+        down = 1
+    if(x + 1 < xSize and not right):
+        neighbors.append((x+1, y))
+    if(y + 1 < ySize and not up):
+        neighbors.append((x, y+1))
+    if(x > 0 and not left):
+        neighbors.append((x-1, y))
+    if(y > 0 and not down):
         neighbors.append((x, y-1))
     return neighbors
 
