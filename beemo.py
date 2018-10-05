@@ -86,19 +86,8 @@ def heuristic((x, y)): #distancia minima ate o destino
     dy = pos_y - position[1]
     return length(dx, dy)
 
-
-def greedy(x, y):
-    border = []
-    heapq.heapify(border)
-    position = getArrayCoords(x, y)
-    neighbors = getNeighbors(position[0], position[1])
-    for i in range(0, len(neighbors)):
-        heapq.heappush(border, heuristic(neighbors[i]))
-    return (heapq.heappop(border))
-
-
-while Aria.getRunning:
-    
+def DFS(x, y):
+    mapa[x][y] = 1
     for i in range(0, robot.getNumSonar()):
       sr = robot.getSonarReading(i)
       if sr.getRange() < sonarMaxRange: # parede
@@ -110,7 +99,19 @@ while Aria.getRunning:
         print log
         mapa.itemset(mapCoords, 1)
         # print mapa
+    neighbors = getNeighbors(x, y)
+    for i,j in neighbors:
+        if(mapa[i][j] == 0):
+            gotoPoseAction(ArPose(getRealCoords(i, j)))
+            if(DFS(i, j)):
+                return 1
+            gotoPoseAction(ArPose(getRealCoords(x, y)))
+    return 0 
 
+
+while Aria.getRunning:
+    
+    
 
 
     print robot.getPose()
