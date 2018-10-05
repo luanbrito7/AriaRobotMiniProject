@@ -2,6 +2,7 @@ from AriaPy import *
 import sys
 import numpy
 import math
+import heapq
 
 from util import get_robot_home, get_map_min_pos, get_map_max_pos
 
@@ -79,17 +80,21 @@ def getNeighbors(x, y): #pega os 6 vizinhos do elemento onde estou
         neighbors.append((x+1, y-1))
     return neighbors
 
-def heuristic(x, y): #distancia minima ate o destino
+def heuristic((x, y)): #distancia minima ate o destino
     position = getRealCoords(x, y)
-    dx = pos_x - position[0]
+    dx = pos_x - position[0]    
     dy = pos_y - position[1]
     return length(dx, dy)
 
 
 def greedy(x, y):
+    border = []
+    heapq.heapify(border)
     position = getArrayCoords(x, y)
     neighbors = getNeighbors(position[0], position[1])
-
+    for i in range(0, len(neighbors)):
+        heapq.heappush(border, heuristic(neighbors[i]))
+    return (heapq.heappop(border))
 
 
 while Aria.getRunning:
